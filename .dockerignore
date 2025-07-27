@@ -2,4 +2,3 @@
 *.csv
 *.md
 .git
-streamlit_app.py

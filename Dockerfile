@@ -2,17 +2,26 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Устанавливаем системные зависимости
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
     software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
-# Сначала копируем только requirements.txt и устанавливаем зависимости
+# Копируем requirements и устанавливаем Python-зависимости
 COPY ./requirements.txt /app
-RUN pip3 install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Затем копируем остальной код
+# Копируем весь код
 COPY . /app
 
-CMD ["python3", "app_api.py"]
+# Разрешаем запуск start.sh
+RUN chmod +x start.sh
+
+# Открываем порты FastAPI и Streamlit
+EXPOSE 8000
+EXPOSE 8501
+
+# Запускаем оба сервиса
+CMD ["./start.sh"]
